@@ -1,0 +1,18 @@
+setup:
+	@echo "--- Installing Dependencies ---"
+	go mod tidy
+	@echo "--- Running Network Setup ---"
+	sudo go run main.go
+
+test:
+	@echo "--- Testing Ping (ns1 -> ns2) ---"
+	sudo ip netns exec ns1 ping -c 3 10.0.2.10
+
+clean:
+	@echo "--- Tearing Down Network ---"
+	sudo ip netns del ns1 2>/dev/null || true
+	sudo ip netns del ns2 2>/dev/null || true
+	sudo ip netns del router-ns 2>/dev/null || true
+	sudo ip link del br0 2>/dev/null || true
+	sudo ip link del br1 2>/dev/null || true
+	@echo "Done."
